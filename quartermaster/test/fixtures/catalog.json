@@ -1,0 +1,37 @@
+{
+  "Panel_Base": {
+    "preview": { "el": "div", "cls": "panel-base" },
+    "unity": "Assets/UI/Prefabs/Panel_Base.prefab",
+    "overridable": ["label", "width", "height", "anchor", "margin"]
+  },
+  "ScrollList": {
+    "preview": { "el": "div", "cls": "scroll-list" },
+    "unity": "Assets/UI/Prefabs/ScrollList.prefab",
+    "overridable": ["scroll", "spacing", "width", "height", "anchor", "margin"]
+  },
+  "Btn_Base": {
+    "preview": { "el": "button", "cls": "btn-base" },
+    "unity": "Assets/UI/Prefabs/Btn_Base.prefab",
+    "overridable": ["label", "iconSlot", "width", "height", "anchor", "margin"]
+  },
+  "Grid_Base": {
+    "preview": { "el": "div", "cls": "grid-base" },
+    "unity": "Assets/UI/Prefabs/Grid_Base.prefab",
+    "overridable": ["layout", "spacing", "width", "height", "anchor", "margin", "scroll"]
+  },
+  "Modal_Base": {
+    "preview": { "el": "dialog", "cls": "modal-base" },
+    "unity": "Assets/UI/Prefabs/Modal_Base.prefab",
+    "overridable": ["label", "width", "height", "anchor"]
+  },
+  "Text_Base": {
+    "preview": { "el": "span", "cls": "text-base" },
+    "unity": "Assets/UI/Prefabs/Text_Base.prefab",
+    "overridable": ["label", "width", "height"]
+  },
+  "ItemSlot": {
+    "preview": { "el": "div", "cls": "item-slot" },
+    "unity": "Assets/UI/Prefabs/ItemSlot.prefab",
+    "overridable": ["iconSlot", "label", "width", "height"]
+  }
+}

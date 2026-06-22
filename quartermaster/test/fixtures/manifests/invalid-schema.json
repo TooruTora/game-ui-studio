@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "screen": "SchemaViolationScreen",
+  "refResolution": [1920],
+  "elements": [
+    {
+      "key": "panel.test",
+      "name": "Panel_Test",
+      "component": "Panel_Base"
+    }
+  ]
+}

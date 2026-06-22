@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "screen": "ConfirmModal",
+  "refResolution": [1920, 1080],
+  "elements": [
+    {
+      "key": "modal.overlay",
+      "name": "Modal_Overlay",
+      "component": "Panel_Base",
+      "anchor": "stretch",
+      "margin": [0, 0, 0, 0],
+      "children": [
+        {
+          "key": "modal.dialog",
+          "name": "Modal_Dialog",
+          "component": "Modal_Base",
+          "anchor": "center",
+          "width": 480,
+          "height": 240,
+          "label": "확인",
+          "children": [
+            {
+              "key": "modal.dialog.message",
+              "name": "Text_Message",
+              "component": "Text_Base",
+              "label": "정말 삭제하시겠습니까?",
+              "anchor": "top",
+              "height": 60
+            },
+            {
+              "key": "modal.dialog.actions",
+              "name": "Panel_Actions",
+              "component": "Panel_Base",
+              "anchor": "bottom",
+              "height": 60,
+              "layout": "horizontal",
+              "spacing": 16,
+              "children": [
+                {
+                  "key": "modal.dialog.actions.confirm",
+                  "name": "Btn_Confirm",
+                  "component": "Btn_Base",
+                  "label": "확인",
+                  "width": 120,
+                  "height": 44
+                },
+                {
+                  "key": "modal.dialog.actions.cancel",
+                  "name": "Btn_Cancel",
+                  "component": "Btn_Base",
+                  "label": "취소",
+                  "width": 120,
+                  "height": 44
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

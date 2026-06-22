@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "screen": "DupKeyScreen",
+  "refResolution": [1920, 1080],
+  "elements": [
+    {
+      "key": "panel.alpha",
+      "name": "Panel_Alpha",
+      "component": "Panel_Base",
+      "anchor": "top",
+      "height": 100
+    },
+    {
+      "key": "panel.alpha",
+      "name": "Panel_AlphaDuplicate",
+      "component": "Panel_Base",
+      "anchor": "bottom",
+      "height": 100
+    }
+  ]
+}

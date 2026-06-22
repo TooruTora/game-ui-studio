@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quartermaster v0.3 — 프리팹까지 가는 UI 파이프라인</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#13171e;
+    --surface:#1b212b;
+    --surface-2:#222b38;
+    --line:#2e3845;
+    --line-soft:#262f3b;
+    --ink:#e7ebf2;
+    --muted:#97a3b4;
+    --faint:#6c7787;
+    --amber:#e0a24a;      /* forge / 실물 빌드 */
+    --amber-dim:#a9783290;
+    --steel:#6cabcf;      /* preview */
+    --steel-dim:#3a6a8540;
+    --rust:#cf7f5e;       /* 경고 */
+    --green:#7bb98f;
+  }
+
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    background:
+      radial-gradient(900px 500px at 80% -10%, #1d2733 0%, transparent 60%),
+      radial-gradient(700px 600px at -10% 20%, #1a212c 0%, transparent 55%),
+      var(--bg);
+    color:var(--ink);
+    font-family:'Inter',-apple-system,system-ui,sans-serif;
+    line-height:1.65;
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:880px;margin:0 auto;padding:0 24px}
+
+  /* ---- eyebrow / headings ---- */
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--amber);font-weight:600;
+    display:flex;align-items:center;gap:10px;
+  }
+  .eyebrow::before{content:"";width:22px;height:1px;background:var(--amber-dim)}
+  h1,h2,h3{font-family:'Space Grotesk',sans-serif;font-weight:600;letter-spacing:-.01em;line-height:1.15}
+  h2{font-size:27px;margin:0 0 6px}
+  h3{font-size:18px;margin:30px 0 8px;color:var(--ink)}
+  p{margin:12px 0}
+  a{color:var(--steel);text-decoration:none;border-bottom:1px solid var(--steel-dim)}
+  a:hover{border-color:var(--steel)}
+  strong{color:#fff;font-weight:600}
+  em{color:var(--amber);font-style:normal;font-weight:500}
+
+  /* ---- hero ---- */
+  header{padding:84px 0 44px;border-bottom:1px solid var(--line-soft)}
+  .badge{
+    font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--faint);
+    border:1px solid var(--line);border-radius:2px;padding:4px 9px;display:inline-block;
+  }
+  h1{font-size:clamp(38px,6vw,60px);margin:22px 0 0;font-weight:700}
+  h1 .accent{color:var(--amber)}
+  .tagline{font-size:19px;color:var(--muted);max-width:620px;margin:18px 0 0;line-height:1.5}
+  .tagline b{color:var(--ink);font-weight:600}
+  .meta-row{
+    display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:30px;
+    font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--faint);
+  }
+  .meta-row span b{color:var(--steel);font-weight:500}
+
+  /* ---- hero diagram ---- */
+  .diagram{
+    margin:40px 0 4px;background:var(--surface);border:1px solid var(--line);
+    border-radius:10px;padding:26px 20px 20px;
+  }
+  .diagram-cap{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--faint);
+    letter-spacing:.08em;text-align:center;margin-top:14px}
+  svg{display:block;width:100%;height:auto}
+
+  /* ---- sections ---- */
+  section{padding:54px 0;border-bottom:1px solid var(--line-soft)}
+  .lead{font-size:17px;color:var(--muted);max-width:640px}
+
+  /* ---- diff banner ---- */
+  .diff{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:26px}
+  .diff-col{background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:18px 20px}
+  .diff-col.old{border-color:var(--line-soft);opacity:.92}
+  .diff-col h4{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;
+    text-transform:uppercase;margin:0 0 10px;font-weight:600}
+  .diff-col.old h4{color:var(--faint)}
+  .diff-col.new h4{color:var(--green)}
+  .diff-col ul{margin:0;padding-left:16px;font-size:13.5px;color:var(--muted);line-height:1.7}
+  .diff-col.old li{text-decoration:line-through;text-decoration-color:var(--rust);text-decoration-thickness:1px}
+
+  /* ---- principle cards ---- */
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:26px}
+  .card{
+    background:var(--surface);border:1px solid var(--line);border-radius:9px;
+    padding:20px 20px 18px;transition:border-color .18s ease,transform .18s ease;
+  }
+  .card:hover{border-color:var(--amber-dim);transform:translateY(-2px)}
+  .card .n{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--amber);font-weight:600}
+  .card h3{margin:8px 0 6px;font-size:16px}
+  .card p{margin:0;font-size:14px;color:var(--muted);line-height:1.55}
+  .card.fresh{border-color:var(--steel-dim)}
+  .card.fresh .n{color:var(--steel)}
+
+  /* ---- numbered steps ---- */
+  .steps{margin-top:26px;counter-reset:s}
+  .step{display:grid;grid-template-columns:38px 1fr;gap:16px;padding:14px 0;border-top:1px solid var(--line-soft)}
+  .step:first-child{border-top:none}
+  .step .num{
+    font-family:'JetBrains Mono',monospace;font-weight:600;font-size:13px;color:var(--bg);
+    background:var(--amber);width:30px;height:30px;border-radius:6px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .step.steel .num{background:var(--steel)}
+  .step.loop .num{background:var(--surface-2);color:var(--steel);border:1px solid var(--steel-dim)}
+  .step h3{margin:2px 0 3px;font-size:16px}
+  .step p{margin:0;font-size:14.5px;color:var(--muted)}
+  .step .tag{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--faint);margin-left:8px}
+
+  /* ---- code ---- */
+  pre{
+    background:#10141a;border:1px solid var(--line);border-radius:9px;
+    padding:18px 20px;overflow-x:auto;margin:20px 0;
+    font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.6;color:#c9d3e0;
+  }
+  pre .k{color:var(--steel)}      /* key */
+  pre .s{color:var(--amber)}      /* string val */
+  pre .c{color:var(--faint)}      /* comment */
+  pre .p{color:#7d8aa0}           /* punctuation-ish */
+  pre .g{color:var(--green)}      /* good / authored */
+  code{font-family:'JetBrains Mono',monospace;font-size:.88em;background:var(--surface-2);
+    padding:1.5px 6px;border-radius:4px;color:var(--amber);border:1px solid var(--line-soft)}
+
+  /* ---- tables ---- */
+  table{width:100%;border-collapse:collapse;margin:22px 0;font-size:13.5px}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line-soft);vertical-align:top}
+  th{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--faint);font-weight:600;border-bottom:1px solid var(--line)}
+  td:first-child{font-family:'JetBrains Mono',monospace;color:var(--amber);font-size:12.5px;white-space:nowrap}
+  td{color:var(--muted)}
+
+  /* ---- plugin tree ---- */
+  .tree{background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:22px 24px;margin-top:24px}
+  .tree-row{display:grid;grid-template-columns:140px 1fr;gap:18px;padding:11px 0;border-top:1px solid var(--line-soft)}
+  .tree-row:first-child{border-top:none}
+  .tree-row .key{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--steel);font-weight:500}
+  .tree-row .val{font-size:14px;color:var(--muted)}
+  .tree-row .val b{color:var(--ink);font-weight:600}
+  .tree-row .val .mono{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--amber)}
+
+  /* ---- roadmap ---- */
+  .road{margin-top:28px;position:relative}
+  .mile{display:grid;grid-template-columns:64px 1fr;gap:20px;padding-bottom:26px;position:relative}
+  .mile::before{content:"";position:absolute;left:31px;top:34px;bottom:-4px;width:1px;background:var(--line)}
+  .mile:last-child::before{display:none}
+  .mile .tagm{
+    font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;color:var(--amber);
+    background:var(--surface);border:1px solid var(--amber-dim);border-radius:8px;
+    height:46px;display:flex;align-items:center;justify-content:center;z-index:1;
+  }
+  .mile.mvp .tagm{color:var(--green);border-color:#7bb98f80}
+  .mile h3{margin:6px 0 4px;font-size:16.5px}
+  .mile p{margin:0;font-size:14px;color:var(--muted)}
+  .mile .dep{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--faint);margin-top:6px}
+
+  /* ---- callouts ---- */
+  .note{
+    border-left:2px solid var(--steel);background:var(--steel-dim);
+    padding:14px 18px;border-radius:0 8px 8px 0;margin:22px 0;font-size:14.5px;color:#cfdbe6;
+  }
+  .note b{color:#fff}
+  .win{
+    border-left:2px solid var(--green);background:#7bb98f1a;
+    padding:13px 18px;border-radius:0 8px 8px 0;margin:14px 0;font-size:14px;color:#c5ddca;
+  }
+  .win b{color:var(--green);font-weight:600}
+  .risk{
+    border-left:2px solid var(--rust);background:#cf7f5e1a;
+    padding:13px 18px;border-radius:0 8px 8px 0;margin:14px 0;font-size:14px;color:#e0c4b6;
+  }
+  .risk b{color:var(--rust);font-weight:600}
+
+  /* ---- prereq list ---- */
+  .req{display:grid;gap:10px;margin-top:24px}
+  .req-item{display:grid;grid-template-columns:24px 1fr;gap:14px;align-items:start}
+  .req-item .dot{width:7px;height:7px;border-radius:50%;background:var(--amber);margin-top:9px;justify-self:center}
+  .req-item p{margin:0;font-size:14.5px;color:var(--muted)}
+  .req-item p b{color:var(--ink)}
+
+  footer{padding:46px 0 70px;color:var(--faint);font-size:13px;font-family:'JetBrains Mono',monospace}
+  footer .open{color:var(--rust)}
+
+  @media (max-width:680px){
+    .grid,.diff{grid-template-columns:1fr}
+    .tree-row{grid-template-columns:1fr;gap:4px}
+    .mile{grid-template-columns:52px 1fr;gap:14px}
+    .mile::before{left:25px}
+    h2{font-size:23px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none!important;animation:none!important}
+    html{scroll-behavior:auto}
+  }
+  .fade{opacity:0;transform:translateY(10px);animation:rise .6s ease forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap fade">
+    <span class="badge">설계 문서 · v0.3</span>
+    <h1>Quarter<span class="accent">master</span></h1>
+    <p class="tagline"><b>기계는 프리팹까지, 사람은 코드부터.</b> 자연어→매니페스트→웹 검수→프리팹 조립. 코드 생성은 빼고, 파이프라인이 만든 프리팹 위에 토라가 구조대로 직접 코딩하는 Claude Code 플러그인.</p>
+    <div class="meta-row">
+      <span>TARGET · <b>UGUI</b></span>
+      <span>ASSETS · <b>상용 PNG 팩</b></span>
+      <span>PREVIEW · <b>경량 웹 (자족)</b></span>
+      <span>ASSEMBLY · <b>프리팹까지 · 멱등</b></span>
+      <span>CODE · <b>사람이 직접</b></span>
+    </div>
+
+    <div class="diagram">
+      <svg viewBox="0 0 820 350" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="데이터 흐름 다이어그램">
+        <defs>
+          <marker id="arw" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+            <path d="M0 0 L8 4.5 L0 9 z" fill="#6c7787"/>
+          </marker>
+          <marker id="arwA" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+            <path d="M0 0 L8 4.5 L0 9 z" fill="#e0a24a"/>
+          </marker>
+          <marker id="arwS" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+            <path d="M0 0 L8 4.5 L0 9 z" fill="#6cabcf"/>
+          </marker>
+        </defs>
+        <style>
+          .box{fill:#222b38;stroke:#2e3845}
+          .lbl{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;fill:#e7ebf2}
+          .sub{font-family:'JetBrains Mono',monospace;font-size:10px;fill:#97a3b4}
+          .mn{font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.08em;fill:#6c7787}
+        </style>
+
+        <!-- 자연어 요청 -->
+        <rect class="box" x="14" y="150" width="118" height="48" rx="8" fill="#1b212b"/>
+        <text class="lbl" x="73" y="172" text-anchor="middle" font-size="13">자연어 요청</text>
+        <text class="sub" x="73" y="187" text-anchor="middle">"로스터 화면"</text>
+
+        <!-- AI 설계 -->
+        <rect class="box" x="172" y="150" width="124" height="48" rx="8"/>
+        <text class="lbl" x="234" y="172" text-anchor="middle" font-size="13">AI 설계</text>
+        <text class="sub" x="234" y="187" text-anchor="middle">ui-designer</text>
+
+        <!-- MANIFEST (center) -->
+        <rect x="342" y="142" width="132" height="64" rx="8" fill="#1b212b" stroke="#e0a24a" stroke-width="1.4"/>
+        <text class="lbl" x="408" y="168" text-anchor="middle" fill="#e0a24a">MANIFEST</text>
+        <text class="sub" x="408" y="184" text-anchor="middle">단일 소스 · JSON</text>
+
+        <!-- Web preview (top) -->
+        <rect class="box" x="552" y="44" width="190" height="60" rx="8" stroke="#6cabcf"/>
+        <text class="lbl" x="647" y="68" text-anchor="middle" fill="#6cabcf">웹 프리뷰 · 브라우저</text>
+        <text class="sub" x="647" y="86" text-anchor="middle">UGUI 앵커 모사 · 폐기형</text>
+
+        <!-- Unity assemble (bottom) -->
+        <rect class="box" x="552" y="240" width="190" height="56" rx="8" stroke="#e0a24a"/>
+        <text class="lbl" x="647" y="263" text-anchor="middle" fill="#e0a24a">Unity · 프리팹 조립</text>
+        <text class="sub" x="647" y="281" text-anchor="middle">베이스 인스턴스 + 레이아웃 오버라이드</text>
+        <text class="mn" x="647" y="320" text-anchor="middle" fill="#7bb98f">↓ View 코드 · 토라가 구조대로 직접</text>
+
+        <!-- arrows: req -> ai -> manifest -->
+        <line x1="132" y1="174" x2="168" y2="174" stroke="#6c7787" stroke-width="1.4" marker-end="url(#arw)"/>
+        <line x1="296" y1="174" x2="338" y2="174" stroke="#6c7787" stroke-width="1.4" marker-end="url(#arw)"/>
+
+        <!-- manifest -> preview -->
+        <path d="M474 156 C 516 134, 516 84, 548 76" fill="none" stroke="#6cabcf" stroke-width="1.4" marker-end="url(#arwS)"/>
+        <!-- manifest -> unity -->
+        <path d="M474 192 C 516 214, 516 268, 548 276" fill="none" stroke="#e0a24a" stroke-width="1.4" marker-end="url(#arwA)"/>
+
+        <!-- preview loop back to manifest (NG feedback) -->
+        <path d="M552 96 C 466 122, 466 100, 440 136" fill="none" stroke="#6cabcf" stroke-width="1.2" stroke-dasharray="4 4" marker-end="url(#arwS)"/>
+        <text class="mn" x="482" y="116" fill="#6cabcf">NG · 피드백 → 재설계</text>
+
+        <!-- OK gate label -->
+        <text class="mn" x="506" y="238" fill="#e0a24a">OK · 승인 후 조립</text>
+      </svg>
+      <div class="diagram-cap">파이프라인은 프리팹에서 멈춘다. 그 위에 사람이 코드를 얹고, 재조립은 그 코드와 손길을 건드리지 않는다.</div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- 책임 경계 -->
+<section>
+  <div class="wrap">
+    <span class="eyebrow">v0.3 · 책임 경계</span>
+    <h2 style="margin-top:14px">파이프라인은 프리팹에서 멈춘다</h2>
+    <p class="lead">v0.3의 결정: <strong>코드 생성을 뺀다.</strong> 파이프라인은 베이스 프리팹을 조립해 화면 프리팹을 만드는 데까지만 책임지고, View·로직 코드는 토라가 정해진 구조에 맞춰 직접 짠다. 코드 생성/머지가 통째로 빠지면서 멱등 보존은 <em>프리팹에만</em> 적용되어 단순해진다.</p>
+
+    <div class="diff">
+      <div class="diff-col new">
+        <h4>파이프라인 (자동)</h4>
+        <ul>
+          <li>매니페스트 설계·스키마 검증</li>
+          <li>웹 프리뷰 렌더 / 검수 루프</li>
+          <li>베이스 프리팹 인스턴스화·계층 구성</li>
+          <li>레이아웃·콘텐츠 오버라이드 적용</li>
+          <li>안정 키로 멱등 재조립 (프리팹)</li>
+        </ul>
+      </div>
+      <div class="diff-col new">
+        <h4>토라 (수동)</h4>
+        <ul>
+          <li>MVC View MonoBehaviour 작성</li>
+          <li>프리팹에 View 부착·참조 와이어링</li>
+          <li>FSM·로직·연출 코드</li>
+          <li>구조 컨벤션 준수 (CLAUDE.md)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="win"><b>왜 깔끔해지나 —</b> 코드 생성을 빼면 partial 분리·컴파일 자가수정 같은 까다로운 장치가 전부 불필요해진다. 사람이 짠 <code>.cs</code>는 애초에 파이프라인이 만들지도 건드리지도 않으니 보존이 자명하고, 멱등 머지는 프리팹 오버라이드 한 종류만 다루면 된다.</div>
+  </div>
+</section>
+
+<!-- 목표 -->
+<section>
+  <div class="wrap">
+    <span class="eyebrow">목표</span>
+    <h2 style="margin-top:14px">더 적은 부품으로 닫는 루프</h2>
+    <p class="lead">자연어로 화면을 요청하면 AI가 레이아웃을 설계하고, 그 매니페스트를 브라우저에서 즉시 렌더해 조립 전에 눈으로 검수한다. 승인된 매니페스트만 Unity MCP로 넘겨 UGUI 화면 프리팹을 조립한다. <em>코드는 사람 몫</em> — 파이프라인은 일관된 이름과 깔끔한 계층의 프리팹을 넘겨주고, 토라는 그 위에 구조대로 View를 얹는다. 재조립해도 사람이 부착한 컴포넌트와 수동 오버라이드는 살아남는다.</p>
+  </div>
+</section>
+
+<!-- 설계 원칙 -->
+<section>
+  <div class="wrap">
+    <span class="eyebrow">설계 원칙</span>
+    <h2 style="margin-top:14px">다섯 개의 축</h2>
+    <div class="grid">
+      <div class="card">
+        <div class="n">A1</div>
+        <h3>매니페스트 단일 소스</h3>
+        <p>JSON 하나가 유일한 진실. 웹 프리뷰와 Unity는 그걸 푸는 두 소비자일 뿐이다. 살아남는 건 매니페스트, 나머지는 산출물.</p>
+      </div>
+      <div class="card">
+        <div class="n">A2</div>
+        <h3>단방향 방화벽</h3>
+        <p>프리뷰는 매니페스트를 받아 그리기만 하는 폐기형 산출물. 좌표·스케일을 Unity로 역수입하지 않는다 — 역방향이 비결정성의 출처이기 때문.</p>
+      </div>
+      <div class="card">
+        <div class="n">A3</div>
+        <h3>카탈로그 그라운딩</h3>
+        <p>AI는 카탈로그에 등재된 component만 쓸 수 있다. 서드파티 에셋 경로·필드를 지어내는 환각을 스키마 검증 hook으로 차단.</p>
+      </div>
+      <div class="card">
+        <div class="n">A4</div>
+        <h3>설계 / 미감 분리</h3>
+        <p>레이아웃 결정(계층·앵커·간격)은 AI에게 위임. 픽셀 단위 미감은 사람이 웹 프리뷰로 빠르게 반복.</p>
+      </div>
+      <div class="card fresh" style="grid-column:1 / -1">
+        <div class="n">A5</div>
+        <h3>멱등 프리팹 보존 + 코드 무간섭</h3>
+        <p>파이프라인이 만지는 건 프리팹뿐. 재조립은 안정 키로 관리 오버라이드(앵커·치수·콘텐츠)만 재적용하고, 사람이 부착한 View 컴포넌트·참조·수동 오버라이드는 보존한다. 코드 파일은 애초에 생성하지 않으니 영원히 사람 소유. "조금 고쳐서 다시"가 안전한 연산이 된다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 데이터 흐름 -->
+<section>
+  <div class="wrap">
+    <span class="eyebrow">데이터 흐름</span>
+    <h2 style="margin-top:14px">검수 루프 + 보존 조립</h2>
+    <p class="lead">NG 반복은 <em>웹 프리뷰 단에서만</em> 돈다. Unity 조립은 시각 승인 뒤, 그리고 이후의 모든 재조립은 사람의 손길을 보존하며 돈다.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="num">1</div>
+        <div><h3>요청 <span class="tag">/ui-design</span></h3><p>"용병 로스터 화면. 좌측 리스트, 우측 상세, 하단 모집 버튼."</p></div>
+      </div>
+      <div class="step">
+        <div class="num">2</div>
+        <div><h3>설계 → 매니페스트 v1 <span class="tag">ui-designer 에이전트</span></h3><p>카탈로그에 있는 component만 골라 계층·앵커·간격을 JSON으로 출력. 각 element에 안정 키 부여. 스키마 검증 통과 필수.</p></div>
+      </div>
+      <div class="step steel">
+        <div class="num">3</div>
+        <div><h3>웹 프리뷰 렌더 <span class="tag">web-preview 스킬</span></h3><p>매니페스트를 브라우저에서 즉시 렌더. flexbox≈LayoutGroup, absolute+anchor≈RectTransform로 UGUI 시맨틱을 모사. 토라가 바로 본다.</p></div>
+      </div>
+      <div class="step steel">
+        <div class="num">4</div>
+        <div><h3>검수 <span class="tag">사람</span></h3><p>OK, 또는 "리스트 너무 좁아, 상세 패널 줄여" 같은 피드백.</p></div>
+      </div>
+      <div class="step loop">
+        <div class="num">↺</div>
+        <div><h3>NG → 재설계 → 3으로</h3><p>매니페스트만 수정해 프리뷰를 다시 그린다. <strong>Unity는 건드리지 않는다.</strong></p></div>
+      </div>
+      <div class="step">
+        <div class="num">5</div>
+        <div><h3>프리팹 조립 <span class="tag">/ui-assemble · Unity MCP</span></h3><p>승인된 매니페스트로 베이스 프리팹을 인스턴스화하고 계층을 구성, 레이아웃·콘텐츠 오버라이드를 적용해 화면 프리팹으로 저장. <strong>코드는 만들지 않는다.</strong></p></div>
+      </div>
+      <div class="step steel">
+        <div class="num">6</div>
+        <div><h3>핸드오프 → 코드 작성 <span class="tag">사람</span></h3><p>토라가 프리팹 위에 MVC View를 붙이고 참조를 와이어링, FSM·로직·연출을 직접 짠다. 일관된 오브젝트 이름이 이 작업을 빠르게 만든다.</p></div>
+      </div>
+      <div class="step">
+        <div class="num">7</div>
+        <div><h3>재조립 = 프리팹 보존 머지 <span class="tag">멱등</span></h3><p>매니페스트를 고쳐 다시 조립하면, 안정 키로 add/update/remove를 판정. 관리 오버라이드만 재적용하고 <strong>사람이 부착한 컴포넌트·참조·수동 오버라이드는 남긴다.</strong></p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 멱등 조립 -->
+<section>
+  <div class="wrap">
+    <span class="eyebrow">멱등 조립 — A5 상세</span>
+    <h2 style="margin-top:14px">프리팹만 덮어쓰고, 나머지는 둔다</h2>
+    <p class="lead">파이프라인은 프리팹의 <em>관리 오버라이드</em>만 소유한다. 사람이 부착한 컴포넌트·참조·수동 변경은 안정 키 기반 머지로 보존되고, 코드 파일은 영역 밖이라 애초에 닿지 않는다.</p>
+
+    <h3>코드는 영역 밖 — 매니페스트는 레이아웃만</h3>
+    <p>파이프라인은 <code>.cs</code>를 만들지 않고, 매니페스트엔 상호작용 정보(콜백 매핑 등)도 두지 않는다. 조립이 <code>name</code>으로 오브젝트를 일관되게 명명해 주는 것이 전부 — 그 일관된 이름 덕에 토라는 View를 작성하고 인스펙터에서 바로 와이어링한다.</p>
+
+<pre><span class="c">// 토라가 직접 작성 — 파이프라인은 이 파일을 만들지도 건드리지도 않음</span>
+<span class="k">public class</span> RosterView <span class="p">:</span> <span class="k">MonoBehaviour</span> <span class="p">{</span>
+  <span class="p">[</span>SerializeField<span class="p">]</span> <span class="k">Button</span> <span class="g">btn_Recruit</span><span class="p">;</span>   <span class="c">// 프리팹의 Btn_Recruit 드래그</span>
+  <span class="k">void</span> <span class="g">Awake</span><span class="p">()</span> <span class="p">{</span>
+    btn_Recruit.onClick.AddListener<span class="p">(</span><span class="g">OnRecruitClicked</span><span class="p">);</span>  <span class="c">// 연결도 직접</span>
+  <span class="p">}</span>
+  <span class="k">void</span> <span class="g">OnRecruitClicked</span><span class="p">()</span> <span class="p">{</span> <span class="c">/* 로직·연출 */</span> <span class="p">}</span>
+<span class="p">}</span></pre>
+
+    <h3>프리팹 — 안정 키 머지</h3>
+    <p>매니페스트 각 element의 <code>key</code>(안정 GUID/path)로 기존 인스턴스를 식별한다. 재조립은 파이프라인이 관리하는 오버라이드(앵커·치수·콘텐츠)만 재적용하고, 사람이 에디터에서 추가한 자식·부착 컴포넌트·오버라이드는 건드리지 않는다.</p>
+
+    <table>
+      <thead><tr><th>대상</th><th>재조립 시 동작</th><th>소유</th></tr></thead>
+      <tbody>
+        <tr><td>관리 오버라이드</td><td>키 매칭으로 재적용 (앵커·치수·콘텐츠)</td><td>파이프라인</td></tr>
+        <tr><td>부착 컴포넌트</td><td>보존 (View MonoBehaviour 등)</td><td>사람</td></tr>
+        <tr><td>참조 와이어링</td><td>보존</td><td>사람</td></tr>
+        <tr><td>수동 오버라이드·자식</td><td>보존 (머지)</td><td>사람</td></tr>
+        <tr><td>코드 파일 (.cs)</td><td>영역 밖 — 미생성·미접촉</td><td>사람</td></tr>
+        <tr><td>키 없는 매니페스트 element</td><td>신규 추가</td><td>파이프라인</td></tr>
+        <tr><td>매니페스트에서 사라진 키</td><td>제거 (확인 후)</td><td>파이프라인</td></tr>
+      </tbody>
+    </table>
+
+    <div class="note"><b>회색지대 규칙 —</b> 파이프라인 관리 영역(앵커·치수·콘텐츠)을 사람이 인스펙터에서 직접 바꾸면, 다음 재조립이 매니페스트 값으로 되돌린다. 그래서 <strong>레이아웃 변경은 항상 매니페스트에서</strong>, 컴포넌트 부착·와이어링·연출은 사람 영역에서. 이 경계가 보존의 핵심.</div>
+  </div>
+</section>
+
+<!-- 매니페스트 스키마 -->
+<section>
+  <div class="wrap">
+    <span class="eyebrow">매니페스트 스키마</span>
+    <h2 style="margin-top:14px">두 소비자의 공통 언어</h2>
+    <p class="lead">웹 프리뷰 종속도, UGUI 종속도 아닌 <em>중립 레이아웃 표현</em>. 양쪽에 어댑터를 두고 <code>component</code> ID로 실체를 풀며, <code>key</code>로 멱등 머지를 건다.</p>
+
+<pre><span class="p">{</span>
+  <span class="k">"screen"</span><span class="p">:</span> <span class="s">"RosterScreen"</span><span class="p">,</span>
+  <span class="k">"refResolution"</span><span class="p">:</span> <span class="p">[</span>1920<span class="p">,</span> 1080<span class="p">],</span>
+  <span class="k">"elements"</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="k">"key"</span><span class="p">:</span> <span class="s">"panel.roster"</span><span class="p">,</span> <span class="c">// 멱등 머지 키</span>
+      <span class="k">"name"</span><span class="p">:</span> <span class="s">"Panel_Roster"</span><span class="p">,</span> <span class="k">"component"</span><span class="p">:</span> <span class="s">"Panel_Base"</span><span class="p">,</span>
+      <span class="k">"anchor"</span><span class="p">:</span> <span class="s">"stretch"</span><span class="p">,</span> <span class="k">"margin"</span><span class="p">:</span> <span class="p">[</span>40<span class="p">,</span>40<span class="p">,</span>40<span class="p">,</span>40<span class="p">],</span>
+      <span class="k">"children"</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span> <span class="k">"key"</span><span class="p">:</span> <span class="s">"list.mercs"</span><span class="p">,</span> <span class="k">"name"</span><span class="p">:</span> <span class="s">"List_Mercs"</span><span class="p">,</span>
+          <span class="k">"component"</span><span class="p">:</span> <span class="s">"ScrollList"</span><span class="p">,</span> <span class="k">"layout"</span><span class="p">:</span> <span class="s">"vertical"</span><span class="p">,</span> <span class="k">"spacing"</span><span class="p">:</span> 8 <span class="p">},</span>
+        <span class="p">{</span> <span class="k">"key"</span><span class="p">:</span> <span class="s">"panel.detail"</span><span class="p">,</span> <span class="k">"name"</span><span class="p">:</span> <span class="s">"Detail"</span><span class="p">,</span>
+          <span class="k">"component"</span><span class="p">:</span> <span class="s">"Panel_Base"</span><span class="p">,</span> <span class="k">"anchor"</span><span class="p">:</span> <span class="s">"right"</span><span class="p">,</span> <span class="k">"width"</span><span class="p">:</span> 600 <span class="p">}</span>
+      <span class="p">]</span>
+    <span class="p">},</span>
+    <span class="p">{</span> <span class="k">"key"</span><span class="p">:</span> <span class="s">"btn.recruit"</span><span class="p">,</span> <span class="k">"name"</span><span class="p">:</span> <span class="s">"Btn_Recruit"</span><span class="p">,</span> <span class="k">"component"</span><span class="p">:</span> <span class="s">"Btn_Base"</span><span class="p">,</span>
+      <span class="k">"anchor"</span><span class="p">:</span> <span class="s">"bottom-right"</span><span class="p">,</span> <span class="k">"label"</span><span class="p">:</span> <span class="s">"Recruit"</span> <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span></pre>
+
+    <table>
+      <thead><tr><th>필드</th><th>역할</th><th>누가 쓰나</th></tr></thead>
+      <tbody>
+        <tr><td>key</td><td>안정 식별자. 재조립 시 add/update/remove 매칭의 기준</td><td>멱등 머지</td></tr>
+        <tr><td>component</td><td>카탈로그의 부품 ID. 실체(프리뷰 노드/프리팹)는 어댑터가 푼다</td><td>프리뷰 + Unity</td></tr>
+        <tr><td>anchor / margin</td><td>추상 앵커·여백. 양쪽이 공통으로 이해</td><td>프리뷰 + Unity</td></tr>
+        <tr><td>layout / spacing</td><td>레이아웃 그룹 종류와 간격</td><td>프리뷰 + Unity</td></tr>
+        <tr><td>width / height</td><td>고정 치수 (선택)</td><td>프리뷰 + Unity</td></tr>
+        <tr><td>label / iconSlot</td><td>부품 오버라이드 값</td><td>프리뷰 + Unity</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 카탈로그 -->
+<section>
+  <div class="wrap">
+    <span class="eyebrow">카탈로그</span>
+    <h2 style="margin-top:14px">양면 사전</h2>
+    <p class="lead">component ID 하나가 프리뷰 쪽 "어떻게 보이나"와 Unity 쪽 "어떤 프리팹인가"를 동시에 가리킨다. 플러그인이 1회 스캔으로 생성하고, 이후 모든 설계가 여기 등재된 것만 참조한다.</p>
+
+<pre><span class="p">{</span>
+  <span class="k">"Btn_Base"</span><span class="p">:</span> <span class="p">{</span>
+    <span class="k">"preview"</span><span class="p">:</span> <span class="p">{</span> <span class="k">"el"</span><span class="p">:</span> <span class="s">"button"</span><span class="p">,</span> <span class="k">"cls"</span><span class="p">:</span> <span class="s">"btn-base"</span> <span class="p">},</span>  <span class="c">// 웹 렌더용</span>
+    <span class="k">"unity"</span><span class="p">:</span> <span class="s">"Assets/UI/Prefabs/Btn_Base.prefab"</span><span class="p">,</span>
+    <span class="k">"overridable"</span><span class="p">:</span> <span class="p">[</span><span class="s">"label"</span><span class="p">,</span> <span class="s">"iconSlot"</span><span class="p">]</span>
+  <span class="p">},</span>
+  <span class="k">"Panel_Base"</span><span class="p">:</span> <span class="p">{</span> <span class="k">"preview"</span><span class="p">:</span> <span class="p">{</span> <span class="k">"el"</span><span class="p">:</span> <span class="s">"div"</span><span class="p">,</span> <span class="k">"cls"</span><span class="p">:</span> <span class="s">"panel-base"</span> <span class="p">},</span>
+    <span class="k">"unity"</span><span class="p">:</span> <span class="s">"Assets/UI/Prefabs/Panel_Base.prefab"</span> <span class="p">}</span>
+<span class="p">}</span></pre>
+
+    <div class="note"><b>왜 더 중요해졌나 —</b> 시각적 출발점을 외부 도구에서 뺐기 때문에, 카탈로그가 곧 AI의 "쓸 수 있는 부품 목록"이자 프리뷰의 렌더 규칙이다. 프리뷰 쪽 매핑은 가벼운 CSS 클래스 한 줄로 충분 — 베이스 프리팹의 9-slice 느낌만 대략 흉내내면 된다.</div>
+  </div>
+</section>
+
+<!-- 플러그인 구성 -->
+<section>
+  <div class="wrap">
+    <span class="eyebrow">Claude Code 플러그인 구성</span>
+    <h2 style="margin-top:14px">파이프라인 → 플러그인 프리미티브</h2>
+
+    <div class="tree">
+      <div class="tree-row">
+        <div class="key">commands/</div>
+        <div class="val">
+          <span class="mono">/ui-design</span> 자연어→매니페스트→프리뷰 ·
+          <span class="mono">/ui-preview</span> 재렌더 ·
+          <span class="mono">/ui-assemble</span> 멱등 조립 ·
+          <span class="mono">/ui-catalog-sync</span> 카탈로그 재생성
+        </div>
+      </div>
+      <div class="tree-row">
+        <div class="key">skills/</div>
+        <div class="val"><b>manifest-schema</b> (저작 규칙·검증·안정 키) · <b>web-preview</b> (매니페스트→HTML/canvas, UGUI 시맨틱 모사) · <b>unity-assemble</b> (매니페스트→프리팹, 멱등 머지, <b>코드 미생성</b>) · <b>catalog-sync</b> (폴더 스캔→양면 매핑)</div>
+      </div>
+      <div class="tree-row">
+        <div class="key">agents/</div>
+        <div class="val"><b>ui-designer</b> — 레이아웃 설계, 상위 모델(Opus급) · <b>ui-assembler</b> — Unity 프리팹 조작·머지(코드 생성 없음), Sonnet급</div>
+      </div>
+      <div class="tree-row">
+        <div class="key">mcp/</div>
+        <div class="val"><b>Unity MCP</b> — CoplayDev/unity-mcp 권장 (무료 MIT, git URL 설치) 또는 Unity 6 공식 MCP Server. <b>Figma MCP 불필요</b> — 프리뷰가 자족.</div>
+      </div>
+      <div class="tree-row">
+        <div class="key">CLAUDE.md</div>
+        <div class="val">UGUI 컨벤션(앵커 프리셋·CanvasScaler 레퍼런스·레이아웃 그룹 기준) · MVC 구조 규약(사람이 코딩할 View/Entity 분리) · 오브젝트 네이밍 규칙 · 안정 키 네이밍 · FSM 네이밍 · <b>카탈로그 외 component 사용 금지</b></div>
+      </div>
+      <div class="tree-row">
+        <div class="key">hooks/</div>
+        <div class="val"><b>스키마 검증 hook</b> (필수 필드·카탈로그 밖 ID 차단·키 중복 검사) · <b>재조립 diff 미리보기 hook</b> (덮어쓸/보존할 영역을 조립 전 출력)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 로드맵 -->
+<section>
+  <div class="wrap">
+    <span class="eyebrow">구현 로드맵</span>
+    <h2 style="margin-top:14px">의존성 순서대로, MVP 먼저</h2>
+    <p class="lead">M1~M3가 핵심 가설("자연어→매니페스트→쓸만한 레이아웃")을 싸게 검증하는 MVP. 어려운 엔지니어링인 멱등 머지(M4)는 가설이 선 다음에 친다.</p>
+
+    <div class="road">
+      <div class="mile mvp">
+        <div class="tagm">M1</div>
+        <div>
+          <h3>매니페스트 스키마 + CLAUDE.md 룰 + 손 검증</h3>
+          <p>공통 언어를 확정하고, <strong>실제 화면 2~3개(로스터·인벤토리·모달)를 손으로 매니페스트로 적어본다.</strong> 스키마가 표현 못 하는 게 여기서 다 드러난다.</p>
+          <div class="dep">의존: 없음 (기반)</div>
+        </div>
+      </div>
+      <div class="mile mvp">
+        <div class="tagm">M2</div>
+        <div>
+          <h3>카탈로그 생성 (catalog-sync)</h3>
+          <p>Unity MCP로 프리팹/스프라이트 폴더를 스캔해 component 인벤토리 + 프리뷰 CSS 매핑 .md/.json 생성.</p>
+          <div class="dep">의존: M1 · 사전 준비 — 베이스 프리팹</div>
+        </div>
+      </div>
+      <div class="mile mvp">
+        <div class="tagm">M3</div>
+        <div>
+          <h3>경량 웹 프리뷰 (web-preview)</h3>
+          <p>매니페스트 → HTML/canvas. 싸고 빠른 검수 게이트로 스키마 표현력을 즉시 검증. 여기까지가 최소 검증 루프.</p>
+          <div class="dep">의존: M1, M2</div>
+        </div>
+      </div>
+      <div class="mile">
+        <div class="tagm">M4</div>
+        <div>
+          <h3>멱등 프리팹 조립 (unity-assemble)</h3>
+          <p>매니페스트 → 베이스 프리팹 인스턴스·계층·오버라이드. 안정 키 머지로 관리 오버라이드만 재적용, 부착 컴포넌트·수동 변경 보존. 코드 생성은 없음. 가장 어려운 부분.</p>
+          <div class="dep">의존: M1, M2 · Unity MCP</div>
+        </div>
+      </div>
+      <div class="mile">
+        <div class="tagm">M5</div>
+        <div>
+          <h3>루프 통합 + 핸드오프 규약 + 보존 검증</h3>
+          <p><span class="mono">/ui-design</span> end-to-end 연결, hook 결합, <strong>오브젝트 네이밍·bindTo 와이어링 규약 확정</strong>(사람이 코딩하기 좋게), <strong>재조립 보존 회귀 테스트</strong>(View 부착·와이어링 후 재조립→유지 확인).</p>
+          <div class="dep">의존: M3, M4</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 사전 준비물 -->
+<section>
+  <div class="wrap">
+    <span class="eyebrow">사전 준비물</span>
+    <h2 style="margin-top:14px">파이프라인 밖에서 한 번 갖춰둘 것</h2>
+    <div class="req">
+      <div class="req-item"><div class="dot"></div><p><b>Unity MCP 설치</b> — CoplayDev/unity-mcp는 Unity 버전 무관·무료(MIT), 패키지 매니저 git URL로 설치. Unity 6를 쓰면 공식 MCP Server도 선택지(구독 필요, AI 크레딧은 미소모).</p></div>
+      <div class="req-item"><div class="dot"></div><p><b>상용 PNG 팩 → 베이스 프리팹 1회 굽기</b> — 임포트 세팅(Point/압축 없음 또는 Bilinear), 9-slice 보더, Sprite Atlas를 잡아 <span class="mono">Btn_Base · Panel_Base</span> 등을 만든다. 이게 카탈로그의 Unity 측 실체. PNG 노가다는 여기서 한 번만.</p></div>
+      <div class="req-item"><div class="dot"></div><p><b>베이스 프리팹의 프리뷰 CSS 매핑</b> — 각 베이스의 대략적 외형(배경·테두리·패딩)을 가벼운 CSS 클래스로 한 번 정의. 웹 프리뷰가 이걸 쓴다. 픽셀 정확이 아니라 "형태 알아볼 정도"면 충분.</p></div>
+      <div class="req-item"><div class="dot"></div><p><b>프로젝트 컨벤션 문서</b> — CLAUDE.md에 들어갈 앵커·오브젝트 네이밍·MVC 구조·안정 키 규칙. 사람이 코딩할 구조와 파이프라인의 명명이 여기서 만난다.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 열린 결정 & 리스크 -->
+<section style="border-bottom:none">
+  <div class="wrap">
+    <span class="eyebrow">열린 결정 &amp; 리스크</span>
+    <h2 style="margin-top:14px">아직 못 박지 않은 것</h2>
+
+    <h3>매니페스트의 성격 — 거의 닫힘</h3>
+    <p>A5(멱등 보존)를 택하면서 답이 명확해졌다. <em>매니페스트가 진실이고 레이아웃 편집은 매니페스트에서(escape hatch), 컴포넌트 부착·와이어링·연출은 사람 영역에서.</em> 남은 건 매니페스트의 가독성 — 주석·포맷을 사람이 읽기 좋게 갈지의 취향 결정뿐.</p>
+
+    <h3>와이어링 자동화 — 안 함 (결정됨)</h3>
+    <p>파이프라인은 와이어링에 일절 관여하지 않는다. 오브젝트 이름은 조립에서 공짜로 나오고, 그 외 참조 연결·콜백은 100% 사람 코드 몫. 따라서 매니페스트는 <code>bindTo</code> 같은 상호작용 필드 없이 <em>순수 레이아웃/구조</em>만 표현한다. 거동은 전부 코드에 산다.</p>
+
+    <div class="risk"><b>프리뷰 충실도 갭.</b> 여전히 100%는 아니다. 다만 웹 렌더러를 UGUI 시맨틱에 맞춰 줄일 수 있어 Figma보다 유리. 최종 미감은 Unity 실물에서 확인 — 프리뷰는 "깨진 레이아웃"을 싸게 잡는 게이트다.</div>
+    <div class="risk"><b>프리뷰 렌더러 유지보수.</b> 스키마가 바뀌면 web-preview도 같이 갱신해야 한다. 매니페스트를 단순하게 유지할수록 이 비용이 작다.</div>
+    <div class="risk"><b>멱등 머지의 회색지대.</b> 사람이 파이프라인 관리 영역(앵커·치수·콘텐츠)을 인스펙터에서 바꾸면 재조립이 되돌린다. 경계 규칙(레이아웃=매니페스트, 부착·와이어링=사람)을 CLAUDE.md에 명문화해 사고를 막는다.</div>
+    <div class="risk"><b>카탈로그 동기화.</b> PNG/프리팹을 추가하면 <span class="mono">catalog-sync</span>를 다시 돌려야 한다. 안 하면 AI가 새 부품을 모른다.</div>
+    <div class="risk"><b>AI 환각.</b> 카탈로그 밖 component 참조 시도 — 스키마 검증 hook으로 저장 단계에서 차단.</div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    QUARTERMASTER · UI PIPELINE PLUGIN · 설계 v0.3 (프리팹까지 · 코드는 사람 · 멱등 프리팹)<br>
+    남은 결정 → <span class="open">매니페스트 가독성: 주석/포맷 수준</span> · 첫 빌드 → M1 스키마 + 손 검증
+  </div>
+</footer>
+
+</body>
+</html>

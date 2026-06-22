@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "screen": "BadKeyScreen",
+  "refResolution": [1920, 1080],
+  "elements": [
+    {
+      "key": "Panel.BadKey",
+      "name": "Panel_BadKey",
+      "component": "Panel_Base",
+      "anchor": "stretch"
+    }
+  ]
+}

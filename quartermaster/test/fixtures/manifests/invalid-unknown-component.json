@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "screen": "BrokenScreen",
+  "refResolution": [1920, 1080],
+  "elements": [
+    {
+      "key": "panel.broken",
+      "name": "Panel_Broken",
+      "component": "NonExistentWidget",
+      "anchor": "stretch"
+    }
+  ]
+}

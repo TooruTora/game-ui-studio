@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "unity": {
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_DATA}/unity-mcp/build/index.js"],
+      "transport": "stdio",
+      "env": {
+        "UNITY_PROJECT_PATH": "${CLAUDE_PLUGIN_DATA}/unity-project",
+        "CLAUDE_PLUGIN_DATA": "${CLAUDE_PLUGIN_DATA}"
+      }
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "name": "quartermaster-marketplace",
+  "owner": {
+    "name": "TooruTora",
+    "email": "galaxykim0611@gmail.com"
+  },
+  "description": "Quartermaster 플러그인 마켓플레이스. Unity UGUI 레이아웃 파이프라인을 Claude Code에 통합합니다.",
+  "plugins": [
+    {
+      "name": "quartermaster",
+      "source": ".",
+      "description": "Unity UGUI 레이아웃 매니페스트 → 프리팹 조립 파이프라인. 자연어 설계 → JSON 매니페스트 → 웹 프리뷰 → Unity 프리팹 자동 조립·멱등 재조립."
+    }
+  ]
+}

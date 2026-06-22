@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "screen": "MissingReqScreen",
+  "refResolution": [1920, 1080],
+  "elements": [
+    {
+      "name": "Panel_NoKey",
+      "component": "Panel_Base",
+      "anchor": "stretch"
+    }
+  ]
+}

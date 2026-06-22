@@ -1,0 +1,34 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://quartermaster.dev/schema/catalog.schema.json",
+  "title": "Quartermaster Catalog",
+  "description": "양면 사전. component ID 하나가 프리뷰 쪽 외형과 Unity 쪽 프리팹을 동시에 가리킨다. catalog-sync가 생성하고 사람이 preview/overridable을 저작한다.",
+  "type": "object",
+  "additionalProperties": {
+    "type": "object",
+    "required": ["unity"],
+    "additionalProperties": false,
+    "properties": {
+      "preview": {
+        "type": "object",
+        "description": "웹 렌더용 매핑 (사람 저작)",
+        "required": ["el"],
+        "additionalProperties": false,
+        "properties": {
+          "el": { "type": "string", "description": "HTML 엘리먼트 (예: button, div)" },
+          "cls": { "type": "string", "description": "CSS 클래스 (예: btn-base)" }
+        }
+      },
+      "unity": {
+        "type": "string",
+        "description": "Unity 프리팹 에셋 경로 (예: Assets/UI/Prefabs/Btn_Base.prefab)",
+        "pattern": "^Assets/.*\\.prefab$"
+      },
+      "overridable": {
+        "type": "array",
+        "description": "이 부품에서 매니페스트가 오버라이드할 수 있는 필드 목록",
+        "items": { "type": "string" }
+      }
+    }
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "screen": "RosterScreen",
+  "refResolution": [1920, 1080],
+  "elements": [
+    {
+      "key": "panel.roster",
+      "name": "Panel_Roster",
+      "component": "Panel_Base",
+      "anchor": "stretch",
+      "margin": [0, 0, 0, 0],
+      "layout": "horizontal",
+      "spacing": 16,
+      "children": [
+        {
+          "key": "list.mercs",
+          "name": "ScrollList_Mercs",
+          "component": "ScrollList",
+          "anchor": "left",
+          "width": 400,
+          "scroll": "vertical",
+          "repeat": "mercs",
+          "children": [
+            {
+              "key": "list.mercs.item",
+              "name": "Panel_MercItem",
+              "component": "Panel_Base",
+              "anchor": "stretch",
+              "height": 80,
+              "layout": "horizontal",
+              "spacing": 8,
+              "children": [
+                {
+                  "key": "list.mercs.item.icon",
+                  "name": "Text_MercName",
+                  "component": "Text_Base",
+                  "label": "용병 이름"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "key": "panel.detail",
+          "name": "Panel_Detail",
+          "component": "Panel_Base",
+          "anchor": "stretch",
+          "layout": "vertical",
+          "spacing": 12,
+          "children": [
+            {
+              "key": "panel.detail.name",
+              "name": "Text_DetailName",
+              "component": "Text_Base",
+              "label": "이름",
+              "height": 40
+            },
+            {
+              "key": "panel.detail.stats",
+              "name": "Panel_Stats",
+              "component": "Panel_Base",
+              "layout": "vertical",
+              "spacing": 8
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "btn.recruit",
+      "name": "Btn_Recruit",
+      "component": "Btn_Base",
+      "anchor": "bottom",
+      "height": 60,
+      "width": 200,
+      "label": "용병 고용",
+      "margin": [0, 0, 0, 20]
+    }
+  ]
+}

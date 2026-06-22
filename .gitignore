@@ -1,0 +1,15 @@
+# OMC 세션 상태 (커밋 제외)
+.omc/
+
+# Node
+node_modules/
+npm-debug.log*
+
+# OS / 에디터
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# 로컬 전용 설정
+.claude/settings.local.json
