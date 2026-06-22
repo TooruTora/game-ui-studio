@@ -12,7 +12,7 @@ Unity UGUI 레이아웃 매니페스트 → 프리팹 조립 파이프라인 Cla
 
 ```bash
 # 마켓플레이스 등록
-/plugin marketplace add TooruTora/game-ui-ux-studio
+/plugin marketplace add TooruTora/game-ui-studio
 
 # 플러그인 설치
 /plugin install game-ui-studio@game-ui-studio-marketplace

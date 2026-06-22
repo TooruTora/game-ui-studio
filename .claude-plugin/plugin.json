@@ -7,6 +7,6 @@
   },
   "license": "MIT",
   "keywords": ["unity", "ugui", "ui", "prefab", "pipeline"],
-  "repository": "https://github.com/TooruTora/game-ui-ux-studio",
-  "homepage": "https://github.com/TooruTora/game-ui-ux-studio/tree/main/game-ui-studio"
+  "repository": "https://github.com/TooruTora/game-ui-studio",
+  "homepage": "https://github.com/TooruTora/game-ui-studio"
 }
