@@ -8,7 +8,7 @@
   "plugins": [
     {
       "name": "quartermaster",
-      "source": ".",
+      "source": "./quartermaster",
       "description": "Unity UGUI 레이아웃 매니페스트 → 프리팹 조립 파이프라인. 자연어 설계 → JSON 매니페스트 → 웹 프리뷰 → Unity 프리팹 자동 조립·멱등 재조립."
     }
   ]
