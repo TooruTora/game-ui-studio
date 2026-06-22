@@ -125,6 +125,39 @@ jobs:
         working-directory: quartermaster
         continue-on-error: true
 
+  # 카탈로그 검증: examples/catalog.json + test/fixtures/catalog.json을
+  # validate-catalog.mjs로 검증 — exit 0 기대. (M2' CI 추가)
+  catalog-validation:
+    name: Catalog Validation (validate-catalog.mjs)
+    runs-on: ubuntu-latest
+    needs: unit-tests
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies (if package.json exists)
+        run: |
+          if [ -f package.json ]; then
+            npm ci
+          else
+            echo "No package.json — zero external deps"
+          fi
+        working-directory: quartermaster
+
+      - name: Validate examples/catalog.json
+        run: node runtime/validate-catalog.mjs examples/catalog.json
+        working-directory: quartermaster
+
+      - name: Validate test/fixtures/catalog.json
+        run: node runtime/validate-catalog.mjs test/fixtures/catalog.json
+        working-directory: quartermaster
+
   # JSON fixture self-validation: parse all fixture JSON files
   json-parse-check:
     name: JSON Fixture Parse Check

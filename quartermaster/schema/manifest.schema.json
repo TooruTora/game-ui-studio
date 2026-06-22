@@ -74,6 +74,11 @@
           "description": "레이아웃 그룹 간격",
           "minimum": 0
         },
+        "columns": {
+          "type": "integer",
+          "description": "grid 레이아웃의 열 개수 (layout=grid일 때 사용)",
+          "minimum": 1
+        },
         "width": { "type": "number", "minimum": 0, "description": "고정 폭 (선택)" },
         "height": { "type": "number", "minimum": 0, "description": "고정 높이 (선택)" },
         "label": { "type": "string", "description": "부품 오버라이드: 텍스트 라벨" },

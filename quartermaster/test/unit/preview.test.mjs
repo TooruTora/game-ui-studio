@@ -141,3 +141,75 @@ test('different manifests produce different html output', () => {
   const r2 = renderPreview(modal, catalog);
   assert.notEqual(r1.html, r2.html, 'Different manifests must produce different html');
 });
+
+// ── columns 렌더 ──────────────────────────────────────────────────────────────
+
+test('grid with columns:3 renders repeat(3,1fr) in html', () => {
+  const manifest = {
+    screen: 'TestScreen',
+    refResolution: [1920, 1080],
+    elements: [
+      {
+        key: 'grid.test',
+        name: 'Grid_Test',
+        component: 'Grid_Base',
+        anchor: 'stretch',
+        layout: 'grid',
+        columns: 3,
+        spacing: 8,
+        children: [
+          { key: 'item.tpl', name: 'Item_Tpl', component: 'Panel_Base' },
+        ],
+      },
+    ],
+  };
+  const { html } = renderPreview(manifest, catalog);
+  assert.ok(
+    html.includes('repeat(3,1fr)'),
+    `html must include repeat(3,1fr) for columns:3, got snippet: ${html.slice(0, 500)}`
+  );
+});
+
+test('grid without columns falls back to auto-fill (no repeat(N,1fr))', () => {
+  const manifest = {
+    screen: 'TestScreen',
+    refResolution: [1920, 1080],
+    elements: [
+      {
+        key: 'grid.nocols',
+        name: 'Grid_NoCols',
+        component: 'Grid_Base',
+        anchor: 'stretch',
+        layout: 'grid',
+      },
+    ],
+  };
+  const { html } = renderPreview(manifest, catalog);
+  // auto-fill 클래스가 적용되고, 인라인 repeat(N,1fr)(N=숫자) 스타일은 없어야 함.
+  // 주의: BASE_CSS에 repeat(auto-fill,...)이 항상 포함되므로 숫자 컬럼 인라인만 검사.
+  assert.ok(
+    html.includes('qm-layout--grid') && !/grid-template-columns:repeat\(\d/.test(html),
+    'Grid without columns must use auto-fill CSS class, not inline repeat(N,1fr)'
+  );
+});
+
+test('columns render is deterministic: same manifest yields identical html twice', () => {
+  const manifest = {
+    screen: 'TestScreen',
+    refResolution: [1920, 1080],
+    elements: [
+      {
+        key: 'grid.det',
+        name: 'Grid_Det',
+        component: 'Grid_Base',
+        anchor: 'stretch',
+        layout: 'grid',
+        columns: 5,
+      },
+    ],
+  };
+  const r1 = renderPreview(manifest, catalog);
+  const r2 = renderPreview(manifest, catalog);
+  assert.equal(r1.html, r2.html, 'columns render must be deterministic');
+  assert.ok(r1.html.includes('repeat(5,1fr)'), 'columns:5 must produce repeat(5,1fr)');
+});

@@ -89,6 +89,19 @@ description: Quartermaster 매니페스트 강제 규약 단일 정본(SSOT). ui
 - `spacing` 필드 → spacing 파라미터에 적용
 - `layout: "none"` 또는 미지정 → LayoutGroup 미추가
 
+### 5-4. columns 필드 (grid 레이아웃 열 개수)
+- **필드명:** `columns`
+- **타입:** integer ≥ 1
+- **적용 대상:** `layout: "grid"` 인 element (GridLayoutGroup)
+- **Unity 매핑:** GridLayoutGroup의 `constraintCount` 파라미터에 적용. `constraint`는 `FixedColumnCount`로 설정.
+- **기본값:** 미지정 시 파이프라인이 GridLayoutGroup 기본값을 사용 (동작은 런타임 소유).
+- **예시:**
+  ```json
+  { "layout": "grid", "columns": 5, "spacing": 8 }
+  ```
+- **검증:** `SCHEMA_VIOLATION` — `columns`가 integer < 1이거나 non-integer이면 차단. `layout: "grid"` 외 element에 지정해도 스키마상 허용되나 파이프라인이 무시한다.
+- **CONTRACT.md 근거:** 스키마 델타 "element.columns (integer ≥1) 추가 — layout=grid의 열 개수. 구조적 관리 필드(MANAGED_FIELDS 포함), overridable 게이팅 대상 아님."
+
 ---
 
 ## 6. 순수 레이아웃 원칙 — bindTo 등 상호작용 필드 금지

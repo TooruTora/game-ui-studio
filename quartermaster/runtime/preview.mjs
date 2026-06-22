@@ -30,6 +30,7 @@ body{background:#1a1a2e;color:#e0e0e0;font-family:system-ui,sans-serif;padding:1
 .qm-layout--vertical{flex-direction:column}
 .qm-layout--horizontal{flex-direction:row;flex-wrap:wrap}
 .qm-layout--grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr))}
+.qm-layout--grid-cols{display:grid}
 .qm-layout--none{display:block}
 .qm-scroll{overflow:auto}
 .qm-scroll--vertical{overflow-y:auto;overflow-x:hidden}
@@ -149,13 +150,25 @@ function renderElement(el, catalog) {
   // 래퍼 div 클래스 (레이아웃/앵커/스크롤)
   const wrapClasses = ['qm-el'];
   if (el.anchor && ANCHOR_CLASS[el.anchor]) wrapClasses.push(ANCHOR_CLASS[el.anchor]);
-  if (el.layout) wrapClasses.push(`qm-layout--${el.layout}`);
+  if (el.layout) {
+    if (el.layout === 'grid' && el.columns !== undefined) {
+      wrapClasses.push('qm-layout--grid-cols');
+    } else {
+      wrapClasses.push(`qm-layout--${el.layout}`);
+    }
+  }
   if (el.scroll && el.scroll !== 'none') wrapClasses.push(`qm-scroll qm-scroll--${el.scroll}`);
 
   const wrapStyle = [];
   if (el.layout === 'vertical') wrapStyle.push('display:flex;flex-direction:column');
   else if (el.layout === 'horizontal') wrapStyle.push('display:flex;flex-direction:row;flex-wrap:wrap');
+  else if (el.layout === 'grid' && el.columns !== undefined) {
+    wrapStyle.push(`display:grid;grid-template-columns:repeat(${el.columns},1fr)`);
+  }
   if (el.spacing !== undefined && (el.layout === 'vertical' || el.layout === 'horizontal')) {
+    wrapStyle.push(`gap:${el.spacing}px`);
+  }
+  if (el.spacing !== undefined && el.layout === 'grid') {
     wrapStyle.push(`gap:${el.spacing}px`);
   }
 

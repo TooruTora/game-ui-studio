@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "screen": "ConfirmModal",
+  "refResolution": [1920, 1080],
+  "elements": [
+    {
+      "key": "modal.confirm",
+      "name": "Modal_Confirm",
+      "component": "Modal_Base",
+      "anchor": "center",
+      "width": 480,
+      "height": 280,
+      "layout": "vertical",
+      "spacing": 24,
+      "margin": [32, 32, 32, 32],
+      "children": [
+        {
+          "key": "modal.confirm.message",
+          "name": "Txt_Message",
+          "component": "Text_Base",
+          "anchor": "stretch",
+          "height": 80,
+          "label": "정말로 실행하시겠습니까?"
+        },
+        {
+          "key": "modal.confirm.actions",
+          "name": "Panel_Actions",
+          "component": "Panel_Base",
+          "anchor": "bottom",
+          "height": 56,
+          "layout": "horizontal",
+          "spacing": 16,
+          "children": [
+            {
+              "key": "modal.confirm.actions.ok",
+              "name": "Btn_Ok",
+              "component": "Btn_Base",
+              "anchor": "stretch",
+              "label": "확인"
+            },
+            {
+              "key": "modal.confirm.actions.cancel",
+              "name": "Btn_Cancel",
+              "component": "Btn_Base",
+              "anchor": "stretch",
+              "label": "취소"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

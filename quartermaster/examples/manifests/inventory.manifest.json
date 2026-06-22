@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "screen": "InventoryScreen",
+  "refResolution": [1920, 1080],
+  "elements": [
+    {
+      "key": "panel.inventory",
+      "name": "Panel_Inventory",
+      "component": "Panel_Base",
+      "anchor": "stretch",
+      "margin": [0, 0, 0, 0],
+      "layout": "vertical",
+      "spacing": 0,
+      "children": [
+        {
+          "key": "panel.inventory.header",
+          "name": "Panel_Header",
+          "component": "Panel_Base",
+          "anchor": "top",
+          "height": 64,
+          "layout": "horizontal",
+          "spacing": 12,
+          "margin": [16, 8, 16, 8],
+          "children": [
+            {
+              "key": "panel.inventory.header.title",
+              "name": "Txt_Title",
+              "component": "Text_Base",
+              "anchor": "stretch",
+              "label": "인벤토리"
+            }
+          ]
+        },
+        {
+          "key": "grid.items",
+          "name": "Grid_Items",
+          "component": "Grid_Base",
+          "anchor": "stretch",
+          "layout": "grid",
+          "columns": 5,
+          "spacing": 8,
+          "scroll": "vertical",
+          "repeat": 40,
+          "margin": [16, 0, 16, 0],
+          "children": [
+            {
+              "key": "grid.items.slot",
+              "name": "Slot_Item",
+              "component": "ItemSlot",
+              "width": 80,
+              "height": 80
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "btn.close",
+      "name": "Btn_Close",
+      "component": "Btn_Base",
+      "anchor": "top-right",
+      "width": 48,
+      "height": 48,
+      "label": "닫기",
+      "margin": [0, 8, 8, 0]
+    }
+  ]
+}

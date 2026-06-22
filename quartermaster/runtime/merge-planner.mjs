@@ -13,7 +13,7 @@ import { pathToFileURL } from 'node:url';
 
 // 머지 플래너가 관리하는 필드 (CONTRACT.md 관리 오버라이드 필드)
 const MANAGED_FIELD_NAMES = [
-  'anchor', 'margin', 'layout', 'spacing',
+  'anchor', 'margin', 'layout', 'spacing', 'columns',
   'width', 'height', 'label', 'iconSlot',
 ];
 

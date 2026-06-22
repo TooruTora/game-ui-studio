@@ -28,6 +28,10 @@
 - `validate-manifest.mjs`는 `manifest.schema.json` + `catalog.json`(있으면)을 입력으로 받아 `{ ok: boolean, errors: [{ code, key, message }] }`를 반환한다. exit code: 유효=0, 무효=2(차단용).
 - 거부 코드: `SCHEMA_VIOLATION`, `CATALOG_UNKNOWN_COMPONENT`, `DUPLICATE_KEY`, `MISSING_REQUIRED`, `OVERRIDABLE_VIOLATION`, `INVALID_KEY_FORMAT`.
 
+## 스키마 델타 (트랙 A, 동결)
+
+- `element.columns` (integer ≥1) 추가: layout=grid의 열 개수. 구조적 관리필드(MANAGED_FIELDS / MANAGED_FIELD_NAMES에 포함), overridable 게이팅 대상 아님. validate-manifest·merge-planner·preview가 모두 인지해야 함.
+
 ## 런타임 계약
 
 - 모든 `runtime/*.mjs`는 ESM, Node ≥18. 순수 함수는 default export + named export로 테스트 가능하게.

@@ -35,7 +35,7 @@ const ELEM_REQUIRED = ['key', 'name', 'component'];
 // element의 허용 필드 (schema additionalProperties:false)
 const ELEM_ALLOWED = new Set([
   'key', 'name', 'component',
-  'anchor', 'margin', 'layout', 'spacing',
+  'anchor', 'margin', 'layout', 'spacing', 'columns',
   'width', 'height', 'label', 'iconSlot',
   'scroll', 'repeat', 'children',
 ]);
@@ -48,7 +48,7 @@ const LAYOUT_ENUM = new Set(['vertical','horizontal','grid','none']);
 const SCROLL_ENUM = new Set(['vertical','horizontal','both','none']);
 
 // 관리 오버라이드 필드 (머지플래너가 재적용하는 전체 관리 필드)
-const MANAGED_FIELDS = new Set(['anchor','margin','layout','spacing','width','height','label','iconSlot']);
+const MANAGED_FIELDS = new Set(['anchor','margin','layout','spacing','columns','width','height','label','iconSlot']);
 
 // 콘텐츠 오버라이드 필드 (카탈로그 overridable 목록으로 게이팅되는 부품별 값).
 // 구조적 레이아웃 필드(anchor/margin/layout/spacing/width/height/scroll/repeat)는
@@ -249,6 +249,13 @@ function validateElement(el, catalog, errors, seenKeys) {
   if ('spacing' in el) {
     if (typeof el.spacing !== 'number' || el.spacing < 0) {
       err(CODES.SCHEMA_VIOLATION, elKey, `spacing must be a number >= 0, got ${el.spacing}`);
+    }
+  }
+
+  // columns (grid 레이아웃 열 개수)
+  if ('columns' in el) {
+    if (!Number.isInteger(el.columns) || el.columns < 1) {
+      err(CODES.SCHEMA_VIOLATION, elKey, `columns must be an integer >= 1, got ${el.columns}`);
     }
   }
 

@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "screen": "RosterScreen",
+  "refResolution": [1920, 1080],
+  "elements": [
+    {
+      "key": "panel.roster",
+      "name": "Panel_Roster",
+      "component": "Panel_Base",
+      "anchor": "stretch",
+      "margin": [0, 0, 0, 0],
+      "layout": "horizontal",
+      "spacing": 16,
+      "children": [
+        {
+          "key": "list.mercs",
+          "name": "List_Mercs",
+          "component": "ScrollList",
+          "anchor": "left",
+          "width": 400,
+          "scroll": "vertical",
+          "repeat": "mercs",
+          "children": [
+            {
+              "key": "list.mercs.item",
+              "name": "Panel_MercItem",
+              "component": "Panel_Base",
+              "anchor": "stretch",
+              "height": 80,
+              "layout": "horizontal",
+              "spacing": 8,
+              "children": [
+                {
+                  "key": "list.mercs.item.icon",
+                  "name": "Slot_MercIcon",
+                  "component": "ItemSlot",
+                  "width": 64,
+                  "height": 64
+                },
+                {
+                  "key": "list.mercs.item.name",
+                  "name": "Txt_MercName",
+                  "component": "Text_Base",
+                  "anchor": "stretch",
+                  "label": "용병 이름"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "key": "panel.detail",
+          "name": "Panel_Detail",
+          "component": "Panel_Base",
+          "anchor": "stretch",
+          "layout": "vertical",
+          "spacing": 12,
+          "children": [
+            {
+              "key": "panel.detail.portrait",
+              "name": "Slot_Portrait",
+              "component": "ItemSlot",
+              "anchor": "top",
+              "width": 120,
+              "height": 120,
+              "margin": [0, 16, 0, 0]
+            },
+            {
+              "key": "panel.detail.name",
+              "name": "Txt_DetailName",
+              "component": "Text_Base",
+              "anchor": "top",
+              "height": 40,
+              "label": "이름"
+            },
+            {
+              "key": "panel.detail.stats",
+              "name": "Panel_Stats",
+              "component": "Panel_Base",
+              "anchor": "stretch",
+              "layout": "vertical",
+              "spacing": 8
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "btn.recruit",
+      "name": "Btn_Recruit",
+      "component": "Btn_Base",
+      "anchor": "bottom-right",
+      "height": 60,
+      "width": 200,
+      "label": "용병 고용",
+      "margin": [0, 0, 24, 24]
+    }
+  ]
+}
