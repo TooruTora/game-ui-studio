@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Game UI Studio Preview — RosterScreen</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:#1a1a2e;color:#e0e0e0;font-family:system-ui,sans-serif;padding:16px}
+.gui-canvas{position:relative;background:#16213e;border:1px solid #0f3460;margin:0 auto}
+.gui-el{position:relative;display:flex;flex-direction:column}
+.gui-el--stretch{align-self:stretch;flex:1 1 auto}
+.gui-el--top{align-self:flex-start;justify-content:flex-start}
+.gui-el--bottom{align-self:flex-end;justify-content:flex-end}
+.gui-el--left{justify-content:flex-start;align-items:flex-start}
+.gui-el--right{justify-content:flex-end;align-items:flex-end}
+.gui-el--center{align-self:center;justify-content:center;align-items:center}
+.gui-el--top-left{justify-content:flex-start;align-items:flex-start}
+.gui-el--top-right{justify-content:flex-start;align-items:flex-end}
+.gui-el--bottom-left{justify-content:flex-end;align-items:flex-start}
+.gui-el--bottom-right{justify-content:flex-end;align-items:flex-end}
+.gui-layout--vertical{flex-direction:column}
+.gui-layout--horizontal{flex-direction:row;flex-wrap:wrap}
+.gui-layout--grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr))}
+.gui-layout--grid-cols{display:grid}
+.gui-layout--none{display:block}
+.gui-scroll{overflow:auto}
+.gui-scroll--vertical{overflow-y:auto;overflow-x:hidden}
+.gui-scroll--horizontal{overflow-x:auto;overflow-y:hidden}
+.gui-scroll--both{overflow:auto}
+.gui-repeat-badge{font-size:10px;background:#0f3460;color:#e94560;border-radius:3px;padding:1px 4px;margin-bottom:4px;display:inline-block}
+.gui-label{font-size:12px;padding:4px 8px;background:#0f3460;border-radius:3px;margin-top:2px}
+.gui-icon-slot{font-size:10px;color:#a0a0b0;padding:2px 4px}
+.gui-key{font-size:9px;color:#555;position:absolute;top:2px;left:2px;pointer-events:none;z-index:10}
+.gui-component-tag{font-size:10px;background:#e94560;color:#fff;border-radius:2px;padding:1px 4px;display:inline-block;margin-bottom:2px}
+.gui-el-inner{border:1px dashed #0f3460;border-radius:4px;padding:6px;position:relative;min-height:24px;min-width:40px}
+button.gui-el-inner{cursor:default;background:#1a4a7a}
+input.gui-el-inner{background:#0d2137;border-style:solid}
+.gui-repeat-item{border:1px dotted #334;border-radius:3px;padding:4px;margin:2px}
+</style>
+</head>
+<body>
+<h2 style="margin-bottom:12px;font-size:14px;color:#a0a0b0">
+  Game UI Studio Preview &mdash; <strong style="color:#e0e0e0">RosterScreen</strong>
+  <span style="font-size:11px;color:#555;margin-left:8px">1920&times;1080</span>
+</h2>
+<div class="gui-canvas" style="width:1200px;min-height:675px">
+<div class="gui-el gui-el--stretch gui-layout--horizontal" style="display:flex;flex-direction:row;flex-wrap:wrap;gap:16px"><div class="gui-el-inner gui-comp--panel_base gui-panel-base" style="margin:0px 0px 0px 0px;gap:16px"><span class="gui-key">panel.roster</span><span class="gui-component-tag">Panel_Base</span><div class="gui-el gui-el--left gui-scroll gui-scroll--vertical"><div class="gui-el-inner gui-comp--scrolllist gui-scrolllist" style="width:400px"><span class="gui-key">list.mercs</span><span class="gui-component-tag">ScrollList</span><span class="gui-repeat-badge">repeat:mercs</span><div class="gui-repeat-item"><div class="gui-el gui-el--stretch gui-layout--horizontal" style="display:flex;flex-direction:row;flex-wrap:wrap;gap:8px"><div class="gui-el-inner gui-comp--panel_base gui-panel-base" style="height:80px;gap:8px"><span class="gui-key">list.mercs.item</span><span class="gui-component-tag">Panel_Base</span><div class="gui-el"><div class="gui-el-inner gui-comp--itemslot gui-itemslot" style="width:64px;height:64px"><span class="gui-key">list.mercs.item.icon</span><span class="gui-component-tag">ItemSlot</span></div></div><div class="gui-el gui-el--stretch"><span class="gui-el-inner gui-comp--text_base gui-text-base"><span class="gui-key">list.mercs.item.name</span><span class="gui-component-tag">Text_Base</span><span class="gui-label">용병 이름</span></span></div></div></div></div><div class="gui-repeat-item"><div class="gui-el gui-el--stretch gui-layout--horizontal" style="display:flex;flex-direction:row;flex-wrap:wrap;gap:8px"><div class="gui-el-inner gui-comp--panel_base gui-panel-base" style="height:80px;gap:8px"><span class="gui-key">list.mercs.item</span><span class="gui-component-tag">Panel_Base</span><div class="gui-el"><div class="gui-el-inner gui-comp--itemslot gui-itemslot" style="width:64px;height:64px"><span class="gui-key">list.mercs.item.icon</span><span class="gui-component-tag">ItemSlot</span></div></div><div class="gui-el gui-el--stretch"><span class="gui-el-inner gui-comp--text_base gui-text-base"><span class="gui-key">list.mercs.item.name</span><span class="gui-component-tag">Text_Base</span><span class="gui-label">용병 이름</span></span></div></div></div></div></div></div><div class="gui-el gui-el--stretch gui-layout--vertical" style="display:flex;flex-direction:column;gap:12px"><div class="gui-el-inner gui-comp--panel_base gui-panel-base" style="gap:12px"><span class="gui-key">panel.detail</span><span class="gui-component-tag">Panel_Base</span><div class="gui-el gui-el--top"><div class="gui-el-inner gui-comp--itemslot gui-itemslot" style="width:120px;height:120px;margin:16px 0px 0px 0px"><span class="gui-key">panel.detail.portrait</span><span class="gui-component-tag">ItemSlot</span></div></div><div class="gui-el gui-el--top"><span class="gui-el-inner gui-comp--text_base gui-text-base" style="height:40px"><span class="gui-key">panel.detail.name</span><span class="gui-component-tag">Text_Base</span><span class="gui-label">이름</span></span></div><div class="gui-el gui-el--stretch gui-layout--vertical" style="display:flex;flex-direction:column;gap:8px"><div class="gui-el-inner gui-comp--panel_base gui-panel-base" style="gap:8px"><span class="gui-key">panel.detail.stats</span><span class="gui-component-tag">Panel_Base</span></div></div></div></div></div></div><div class="gui-el gui-el--bottom-right"><button class="gui-el-inner gui-comp--btn_base gui-btn-base" style="width:200px;height:60px;margin:0px 24px 24px 0px"><span class="gui-key">btn.recruit</span><span class="gui-component-tag">Btn_Base</span><span class="gui-label">용병 고용</span></button></div>
+</div>
+</body>
+</html>

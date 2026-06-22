@@ -1,0 +1,12 @@
+{
+  "name": "game-ui-studio",
+  "description": "Unity UGUI 레이아웃 매니페스트 → 프리팹 조립 파이프라인. 자연어 설계 → JSON 매니페스트 → 웹 프리뷰 → Unity 프리팹 자동 조립·멱등 재조립을 지원하는 Claude Code 플러그인.",
+  "author": {
+    "name": "TooruTora",
+    "email": "galaxykim0611@gmail.com"
+  },
+  "license": "MIT",
+  "keywords": ["unity", "ugui", "ui", "prefab", "pipeline"],
+  "repository": "https://github.com/TooruTora/game-ui-ux-studio",
+  "homepage": "https://github.com/TooruTora/game-ui-ux-studio/tree/main/game-ui-studio"
+}

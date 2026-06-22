@@ -1,0 +1,37 @@
+{
+  "Panel_Base": {
+    "preview": { "el": "div", "cls": "gui-panel-base" },
+    "unity": "Assets/UI/Prefabs/Panel_Base.prefab",
+    "overridable": []
+  },
+  "Btn_Base": {
+    "preview": { "el": "button", "cls": "gui-btn-base" },
+    "unity": "Assets/UI/Prefabs/Btn_Base.prefab",
+    "overridable": ["label", "iconSlot"]
+  },
+  "ScrollList": {
+    "preview": { "el": "div", "cls": "gui-scrolllist" },
+    "unity": "Assets/UI/Prefabs/ScrollList.prefab",
+    "overridable": []
+  },
+  "Grid_Base": {
+    "preview": { "el": "div", "cls": "gui-grid-base" },
+    "unity": "Assets/UI/Prefabs/Grid_Base.prefab",
+    "overridable": []
+  },
+  "Modal_Base": {
+    "preview": { "el": "div", "cls": "gui-modal-base" },
+    "unity": "Assets/UI/Prefabs/Modal_Base.prefab",
+    "overridable": []
+  },
+  "Text_Base": {
+    "preview": { "el": "span", "cls": "gui-text-base" },
+    "unity": "Assets/UI/Prefabs/Text_Base.prefab",
+    "overridable": ["label"]
+  },
+  "ItemSlot": {
+    "preview": { "el": "div", "cls": "gui-itemslot" },
+    "unity": "Assets/UI/Prefabs/ItemSlot.prefab",
+    "overridable": ["iconSlot"]
+  }
+}

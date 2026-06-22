@@ -1,0 +1,13 @@
+{
+  "name": "game-ui-studio",
+  "description": "Unity UGUI 레이아웃 매니페스트 → 프리팹 조립 파이프라인 Claude Code 플러그인",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "devDependencies": {}
+}
