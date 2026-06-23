@@ -1,0 +1,132 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://game-ui-studio.dev/schema/prefab-spec.schema.json",
+  "title": "Game UI Studio Prefab Spec",
+  "description": "베이스 프리팹 스펙. 키=프리팹명(PascalCase+언더스코어), 값=각 프리팹 셋업 정보.",
+  "type": "object",
+  "additionalProperties": false,
+  "patternProperties": {
+    "^[A-Za-z][A-Za-z0-9_]*$": {
+      "type": "object",
+      "required": ["kind", "sourceSprite", "savePath"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": ["button", "panel", "scroll", "grid", "modal", "text", "slot"],
+          "description": "UGUI 컴포넌트 종류"
+        },
+        "sourceSprite": {
+          "type": "string",
+          "description": "소스 PNG 에셋 경로 (예: Assets/UI/Source/button.png)"
+        },
+        "savePath": {
+          "type": "string",
+          "pattern": "^Assets/.*\\.prefab$",
+          "description": "Unity 프리팹 저장 경로"
+        },
+        "import": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "textureType": {
+              "type": "string",
+              "default": "Sprite",
+              "description": "Texture Type (기본 Sprite)"
+            },
+            "spriteMode": {
+              "type": "string",
+              "default": "Single",
+              "description": "Sprite Mode (기본 Single)"
+            },
+            "pixelsPerUnit": {
+              "type": "number",
+              "minimum": 1,
+              "default": 100,
+              "description": "Pixels Per Unit (기본 100)"
+            },
+            "filterMode": {
+              "type": "string",
+              "enum": ["Point", "Bilinear", "Trilinear"],
+              "default": "Bilinear",
+              "description": "Filter Mode"
+            },
+            "compression": {
+              "type": "string",
+              "enum": ["None", "LowQuality", "NormalQuality", "HighQuality"],
+              "default": "None",
+              "description": "Compression"
+            },
+            "generateMipMaps": {
+              "type": "boolean",
+              "default": false,
+              "description": "Generate Mip Maps (기본 off)"
+            }
+          }
+        },
+        "nineSlice": {
+          "oneOf": [
+            {
+              "type": "object",
+              "required": ["border"],
+              "additionalProperties": false,
+              "properties": {
+                "border": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "minItems": 4,
+                  "maxItems": 4,
+                  "description": "9-slice 보더 [left, bottom, right, top] (픽셀, 정수 ≥0)"
+                }
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "9-slice 설정. 9-slice 불필요 시 null 또는 생략."
+        },
+        "atlas": {
+          "type": "string",
+          "description": "포함할 Sprite Atlas 이름 (선택)"
+        },
+        "hierarchy": {
+          "type": "array",
+          "description": "프리팹 GameObject 계층·컴포넌트 기술 (선택)",
+          "items": {
+            "type": "object",
+            "required": ["node", "components"],
+            "additionalProperties": false,
+            "properties": {
+              "node": {
+                "type": "string",
+                "description": "GameObject 이름"
+              },
+              "parent": {
+                "type": "string",
+                "description": "부모 GameObject 이름 (생략 시 최상위)"
+              },
+              "components": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "부착할 Unity 컴포넌트 목록"
+              },
+              "note": {
+                "type": "string",
+                "description": "추가 설명 (선택)"
+              }
+            }
+          }
+        },
+        "overridable": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "매니페스트가 오버라이드 가능한 콘텐츠 필드 목록 (카탈로그 overridable과 일치)"
+        }
+      }
+    }
+  }
+}

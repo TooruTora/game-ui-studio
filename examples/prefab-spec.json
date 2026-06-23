@@ -1,0 +1,196 @@
+{
+  "Panel_Base": {
+    "kind": "panel",
+    "sourceSprite": "Assets/UI/Source/panel_base.png",
+    "savePath": "Assets/UI/Prefabs/Panel_Base.prefab",
+    "import": {
+      "textureType": "Sprite",
+      "spriteMode": "Single",
+      "pixelsPerUnit": 100,
+      "filterMode": "Bilinear",
+      "compression": "None",
+      "generateMipMaps": false
+    },
+    "nineSlice": {
+      "border": [20, 20, 20, 20]
+    },
+    "atlas": "UIBaseAtlas",
+    "hierarchy": [
+      {
+        "node": "Panel_Base",
+        "components": ["RectTransform", "CanvasRenderer", "Image"],
+        "note": "Image는 9-slice 모드로 설정. Source Image에 panel_base 스프라이트 할당."
+      }
+    ]
+  },
+  "Btn_Base": {
+    "kind": "button",
+    "sourceSprite": "Assets/UI/Source/btn_base.png",
+    "savePath": "Assets/UI/Prefabs/Btn_Base.prefab",
+    "import": {
+      "textureType": "Sprite",
+      "spriteMode": "Single",
+      "pixelsPerUnit": 100,
+      "filterMode": "Bilinear",
+      "compression": "None",
+      "generateMipMaps": false
+    },
+    "nineSlice": {
+      "border": [12, 12, 12, 12]
+    },
+    "atlas": "UIBaseAtlas",
+    "hierarchy": [
+      {
+        "node": "Btn_Base",
+        "components": ["RectTransform", "CanvasRenderer", "Image", "Button"],
+        "note": "Image는 9-slice 모드. Button의 Target Graphic에 Image 연결."
+      },
+      {
+        "node": "Label",
+        "parent": "Btn_Base",
+        "components": ["RectTransform", "CanvasRenderer", "Text"],
+        "note": "Anchor=stretch. 버튼 레이블 텍스트. View MonoBehaviour에서 바인딩."
+      },
+      {
+        "node": "IconSlot",
+        "parent": "Btn_Base",
+        "components": ["RectTransform", "CanvasRenderer", "Image"],
+        "note": "아이콘 슬롯. 필요 없으면 비활성화."
+      }
+    ],
+    "overridable": ["label", "iconSlot"]
+  },
+  "ScrollList": {
+    "kind": "scroll",
+    "sourceSprite": "Assets/UI/Source/scroll_bg.png",
+    "savePath": "Assets/UI/Prefabs/ScrollList.prefab",
+    "import": {
+      "textureType": "Sprite",
+      "spriteMode": "Single",
+      "pixelsPerUnit": 100,
+      "filterMode": "Bilinear",
+      "compression": "None",
+      "generateMipMaps": false
+    },
+    "nineSlice": null,
+    "atlas": "UIBaseAtlas",
+    "hierarchy": [
+      {
+        "node": "ScrollList",
+        "components": ["RectTransform", "CanvasRenderer", "Image", "ScrollRect", "Mask"],
+        "note": "Scroll Direction=Vertical. Mask의 Show Mask Graphic=false."
+      },
+      {
+        "node": "Content",
+        "parent": "ScrollList",
+        "components": ["RectTransform", "VerticalLayoutGroup", "ContentSizeFitter"],
+        "note": "ContentSizeFitter: Vertical Fit=Preferred Size. Anchor=top-stretch."
+      }
+    ]
+  },
+  "Grid_Base": {
+    "kind": "grid",
+    "sourceSprite": "Assets/UI/Source/grid_bg.png",
+    "savePath": "Assets/UI/Prefabs/Grid_Base.prefab",
+    "import": {
+      "textureType": "Sprite",
+      "spriteMode": "Single",
+      "pixelsPerUnit": 100,
+      "filterMode": "Bilinear",
+      "compression": "None",
+      "generateMipMaps": false
+    },
+    "nineSlice": null,
+    "atlas": "UIBaseAtlas",
+    "hierarchy": [
+      {
+        "node": "Grid_Base",
+        "components": ["RectTransform", "CanvasRenderer", "Image", "GridLayoutGroup", "ContentSizeFitter"],
+        "note": "GridLayoutGroup: Cell Size/Spacing은 매니페스트 columns 값 기준으로 조정. ContentSizeFitter: Vertical Fit=Preferred Size."
+      }
+    ]
+  },
+  "Modal_Base": {
+    "kind": "modal",
+    "sourceSprite": "Assets/UI/Source/modal_base.png",
+    "savePath": "Assets/UI/Prefabs/Modal_Base.prefab",
+    "import": {
+      "textureType": "Sprite",
+      "spriteMode": "Single",
+      "pixelsPerUnit": 100,
+      "filterMode": "Bilinear",
+      "compression": "None",
+      "generateMipMaps": false
+    },
+    "nineSlice": {
+      "border": [24, 24, 24, 24]
+    },
+    "atlas": "UIBaseAtlas",
+    "hierarchy": [
+      {
+        "node": "Modal_Base",
+        "components": ["RectTransform", "CanvasRenderer", "Image"],
+        "note": "Image는 9-slice 모드. Anchor=center. 배경 오버레이는 별도 오브젝트로 구성."
+      },
+      {
+        "node": "Content",
+        "parent": "Modal_Base",
+        "components": ["RectTransform", "VerticalLayoutGroup"],
+        "note": "모달 내부 콘텐츠 영역. Padding/Spacing은 프로젝트 디자인 가이드 참조."
+      }
+    ]
+  },
+  "Text_Base": {
+    "kind": "text",
+    "sourceSprite": "Assets/UI/Source/text_base.png",
+    "savePath": "Assets/UI/Prefabs/Text_Base.prefab",
+    "import": {
+      "textureType": "Sprite",
+      "spriteMode": "Single",
+      "pixelsPerUnit": 100,
+      "filterMode": "Bilinear",
+      "compression": "None",
+      "generateMipMaps": false
+    },
+    "nineSlice": null,
+    "hierarchy": [
+      {
+        "node": "Text_Base",
+        "components": ["RectTransform", "CanvasRenderer", "Text"],
+        "note": "Font/Size/Color는 미적 판단으로 사람이 결정. View MonoBehaviour에서 label 바인딩."
+      }
+    ],
+    "overridable": ["label"]
+  },
+  "ItemSlot": {
+    "kind": "slot",
+    "sourceSprite": "Assets/UI/Source/item_slot.png",
+    "savePath": "Assets/UI/Prefabs/ItemSlot.prefab",
+    "import": {
+      "textureType": "Sprite",
+      "spriteMode": "Single",
+      "pixelsPerUnit": 100,
+      "filterMode": "Point",
+      "compression": "None",
+      "generateMipMaps": false
+    },
+    "nineSlice": {
+      "border": [4, 4, 4, 4]
+    },
+    "atlas": "UIBaseAtlas",
+    "hierarchy": [
+      {
+        "node": "ItemSlot",
+        "components": ["RectTransform", "CanvasRenderer", "Image"],
+        "note": "슬롯 배경. Image는 9-slice 모드."
+      },
+      {
+        "node": "IconSlot",
+        "parent": "ItemSlot",
+        "components": ["RectTransform", "CanvasRenderer", "Image"],
+        "note": "아이콘 이미지. View MonoBehaviour에서 iconSlot 스프라이트 바인딩."
+      }
+    ],
+    "overridable": ["iconSlot"]
+  }
+}
